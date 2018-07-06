@@ -1,11 +1,3 @@
-/**
- * Module to add a game
- * @module controllers/games/newGame
- */
-const database = require('../../models/database');
-const logger = require('../../../tools/logger');
-const validator = require('../../utils/validator');
-const constants = require('../../utils/constants');
 const port = require('../../core/serialPort');
 
 module.exports = (req, res) => {

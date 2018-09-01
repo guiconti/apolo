@@ -43,7 +43,7 @@ module.exports = (req, res) => {
   stripColors[strip].green = green;
   stripColors[strip].blue = blue
 
-  port.write(formatAnswer, err => {
+  port.write(formatAnswer(), err => {
     if (err)
       return res.status(500).json({
         msg: err

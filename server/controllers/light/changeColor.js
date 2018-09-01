@@ -1,8 +1,25 @@
 const port = require('../../core/serialPort');
 
+const stripAmount = 2;
+let stripColors = [];
+
+for (let i = 0; i < stripAmount; i++) {
+  stripColors[i] = {
+    red: 255,
+    green: 255,
+    blue: 255
+  };
+}
+
 module.exports = (req, res) => {
 
-  let { red, green, blue } = req.body;
+  let { strip, red, green, blue } = req.body;
+
+  if (!isValidStrip(strip)) {
+    return res.status(400).json({
+      msg: 'Invalid strip'
+    });
+  }
 
   if (!isValidColor(red)) {
     return res.status(400).json({
@@ -22,7 +39,11 @@ module.exports = (req, res) => {
     });
   }
 
-  port.write(formatColor(red) + formatColor(green) + formatColor(blue), err => {
+  stripColors[strip].red = red;
+  stripColors[strip].green = green;
+  stripColors[strip].blue = blue
+
+  port.write(formatAnswer, err => {
     if (err)
       return res.status(500).json({
         msg: err
@@ -33,9 +54,23 @@ module.exports = (req, res) => {
   });
 };
 
+function isValidStrip(strip) {
+  return strip >= 0 && strip <= 1;
+}
+
 function isValidColor(color) {
   return color >= 0 && color <= 255;
-};
+}
+
+function formatAnswer() {
+  let answer = '';
+  stripColors.forEach(strip => {
+    answer += formatColor(strip.red);
+    answer += formatColor(strip.green);
+    answer += formatColor(strip.blue);
+  });
+  return answer;
+}
 
 function formatColor(color) {
   let formattedColor = color.toString();
